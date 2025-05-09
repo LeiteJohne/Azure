@@ -1,1 +1,53 @@
-hello!
+Entra Connect: Device Not Syncing to Entra ID? Here's What to Check 
+
+A common questions we get is: "Why is my device not syncing?"
+In this post, I’ll walk you through some basic troubleshooting steps to identify why a device might not be synchronizing to the cloud when using Microsoft Entra Connect (formerly Azure AD Connect).
+
+First Things First: Is the Device in the Right OU?
+Ensure that the device is located in an Organizational Unit (OU) that is selected for synchronization. This is a fundamental but often overlooked step.
+
+
+Default Sync Requirements
+By default, Entra Connect uses standard synchronization rules. For a device to sync, two key conditions must be met:
+	1. The userCertificate attribute must be populated
+	2. The operating system must be Windows 10 or later
+(Earlier versions do not populate the userCertificate attribute.)
+
+How to Check if userCertificate Is Populated
+	1. Open Active Directory Users and Computers
+	2. Click on View > Advanced Features (This will allow you to view the Attribute Editor)
+	3. Locate the device, right-click, and select Properties
+	4. Go to the Attribute Editor tab
+	5. Search for userCertificate and verify it has a value:
+
+
+If the userCertificate attribute is empty, the device will not sync to Entra ID.
+
+Passed the Default Checks But Still Not Syncing?
+If the device meets the above criteria and is still not syncing, the next step is to check for custom synchronization rules. Many organizations create custom filters to allow only specific devices to sync to the cloud.
+To investigate this, use the Metaverse Search feature in the Synchronization Service Manager:
+
+
+
+How to Use Metaverse Search
+	1. Open Synchronization Service Manager
+	2. Click on Metaverse Search
+	3. Search for the affected device
+	4. Look for the attribute cloudFiltered:
+
+
+
+If cloudFiltered = true, this means the device is being filtered out and will not sync.
+You will also see which sync rule is applying the filter, helping you identify whether:
+	• The device needs to be updated to match the rule
+	• Or the rule itself needs to be modified or removed
+
+Summary
+Here’s a quick checklist for troubleshooting device sync issues:
+	• Is the device in a synced OU?
+	• Is the OS Windows 10 or newer?
+	• Is the userCertificate attribute populated?
+	• Is the device being filtered by a custom sync rule (cloudFiltered = true)?
+Once you've identified the root cause, you can take appropriate action, whether it's updating the device or adjusting your synchronization rules.
+
+I hope this guide helps you quickly resolve basic device sync issues with Entra Connect.
